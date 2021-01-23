@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { User } from '../entities/User';
+import User from '../entities/User';
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -9,7 +9,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     if (!token) throw new Error('Unauthenticated');
 
-    const { username }: any = jwt.verify(token, process.env.JWT_SECRET);
+    const { username }: any = jwt.verify(token, process.env.JWT_SECRET!);
 
     const user = await User.findOne({ username });
 
