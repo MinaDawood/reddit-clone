@@ -6,6 +6,7 @@ import {
   BeforeInsert,
   Index,
   OneToMany,
+  AfterLoad,
 } from 'typeorm';
 import { makeId, slugify } from '../util/helpers';
 import Comment from './Comment';
@@ -38,6 +39,9 @@ export default class POST extends Entity {
   @Column()
   subName: string;
 
+  @Column()
+  username: string;
+
   @ManyToOne(() => User, user => user.posts)
   @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   user: User;
@@ -48,6 +52,12 @@ export default class POST extends Entity {
 
   @OneToMany(() => Comment, comment => comment.post)
   comments: Comment[];
+
+  protected url: string;
+  @AfterLoad()
+  createFields() {
+    this.url = `r/${this.subName}/${this.identifier}/${this.slug}`;
+  }
 
   @BeforeInsert()
   makeIdAndSlug() {
